@@ -1,141 +1,112 @@
-import { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowRight, ArrowUpRight, Search, Sparkles, Menu, X, Scissors,
-  MapPin, Clock3, Star, ChevronDown, Instagram, Play, SlidersHorizontal
-} from "lucide-react";
-
-const categories = ["All styles", "Indian heritage", "Regional looks", "Bridal", "Modern women", "Modern men"];
+import { useMemo, useState } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { ArrowDown, ArrowRight, ArrowUpRight, Search, Sparkles, Menu, X, Scissors, MapPin, CalendarDays, Camera, SlidersHorizontal, Heart, ChevronDown } from 'lucide-react';
 
 const styles = [
-  { id: "IND-001", name: "Poola Jada", region: "Andhra Pradesh", category: "Indian heritage", tag: "Traditional", length: "Long", description: "A statement bridal braid finished with jasmine and traditional ornaments.", image: "https://images.unsplash.com/photo-151969-c7c5e3a7e2e2?auto=format&fit=crop&w=900&q=85" },
-  { id: "IND-002", name: "Telangana Pelli Jada", region: "Telangana", category: "Bridal", tag: "Bridal edit", length: "Long", description: "A richly detailed wedding braid with floral accents and heirloom-inspired styling.", image: "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?auto=format&fit=crop&w=900&q=85" },
-  { id: "IND-003", name: "Bengali Khopa", region: "West Bengal", category: "Regional looks", tag: "Heritage", length: "Medium", description: "A graceful low bun with a timeless, softly structured silhouette.", image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=900&q=85" },
-  { id: "IND-004", name: "Punjabi Paranda Braid", region: "Punjab", category: "Regional looks", tag: "Festive", length: "Long", description: "A bold braid with colourful tassel-inspired detailing.", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=85" },
-  { id: "MOD-001", name: "Butterfly Layers", region: "Contemporary", category: "Modern women", tag: "Trending", length: "Long", description: "Airy, face-framing layers that create movement and volume.", image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=85" },
-  { id: "MOD-002", name: "Soft Layered Bob", region: "Contemporary", category: "Modern women", tag: "Minimal", length: "Short", description: "A polished bob with soft movement and an effortless finish.", image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=900&q=85" },
-  { id: "MOD-003", name: "Textured Crop", region: "Contemporary", category: "Modern men", tag: "Clean cut", length: "Short", description: "A neat, textured shape with a modern low-maintenance profile.", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=85" },
-  { id: "MOD-004", name: "Low Taper Fade", region: "Contemporary", category: "Modern men", tag: "Popular", length: "Short", description: "A subtle taper that keeps the finish sharp without looking severe.", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=900&q=85" },
-  { id: "IND-005", name: "Kerala Jasmine Bun", region: "Kerala", category: "Indian heritage", tag: "Classic", length: "Medium", description: "A traditional bun styled with a delicate jasmine garland.", image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=85" },
-  { id: "IND-006", name: "Odissi Dance Bun", region: "Odisha", category: "Regional looks", tag: "Dance", length: "Medium", description: "A performance-ready bun inspired by classical Odissi styling.", image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=900&q=85" },
-  { id: "IND-007", name: "Maharashtrian Ambada", region: "Maharashtra", category: "Bridal", tag: "Traditional", length: "Medium", description: "A sculpted bun with a traditional, ornament-ready finish.", image: "https://images.unsplash.com/photo-1526510747491-58f928ec870f?auto=format&fit=crop&w=900&q=85" },
-  { id: "MOD-005", name: "Modern Wolf Cut", region: "Contemporary", category: "Modern women", tag: "Editorial", length: "Medium", description: "Shaggy layers, natural texture and a confident silhouette.", image: "https://images.unsplash.com/photo-1524503033411-f7a2fe8c6f7a?auto=format&fit=crop&w=900&q=85" }
+  { id: 1, name: 'Poola Jada', group: 'Indian Heritage', region: 'Andhra Pradesh', gender: 'Women', length: 'Long', type: 'Traditional', image: 'photo-1515886657613-9f3515b0c78f' },
+  { id: 2, name: 'Telangana Pelli Jada', group: 'Bridal & Festive', region: 'Telangana', gender: 'Women', length: 'Long', type: 'Traditional', image: 'photo-1524504388940-b1c1722653e1' },
+  { id: 3, name: 'Kerala Jasmine Bun', group: 'Indian Heritage', region: 'Kerala', gender: 'Women', length: 'Medium', type: 'Traditional', image: 'photo-1534528741775-53994a69daeb' },
+  { id: 4, name: 'Bengali Khopa', group: 'Bridal & Festive', region: 'West Bengal', gender: 'Women', length: 'Medium', type: 'Traditional', image: 'photo-1529139574466-a303027c1d8b' },
+  { id: 5, name: 'Punjabi Paranda Braid', group: 'Indian Heritage', region: 'Punjab', gender: 'Women', length: 'Long', type: 'Traditional', image: 'photo-1508214751196-bcfd4ca60f91' },
+  { id: 6, name: 'Mughal-Inspired Waves', group: 'Indian Heritage', region: 'North India', gender: 'Women', length: 'Long', type: 'Historical-inspired', image: 'photo-1524250502761-1ac6f2e30d43' },
+  { id: 7, name: 'Butterfly Layers', group: 'Modern Women', region: 'Contemporary', gender: 'Women', length: 'Long', type: 'Modern', image: 'photo-1524504388940-b1c1722653e1' },
+  { id: 8, name: 'Soft Layered Bob', group: 'Modern Women', region: 'Contemporary', gender: 'Women', length: 'Short', type: 'Modern', image: 'photo-1534528741775-53994a69daeb' },
+  { id: 9, name: 'Wolf Cut', group: 'Modern Women', region: 'Contemporary', gender: 'Women', length: 'Medium', type: 'Modern', image: 'photo-1529139574466-a303027c1d8b' },
+  { id: 10, name: 'Curtain Bangs', group: 'Modern Women', region: 'Contemporary', gender: 'Women', length: 'Medium', type: 'Modern', image: 'photo-1508214751196-bcfd4ca60f91' },
+  { id: 11, name: 'Low Taper Fade', group: 'Modern Men', region: 'Contemporary', gender: 'Men', length: 'Short', type: 'Modern', image: 'photo-1500648767791-00dcc994a43e' },
+  { id: 12, name: 'Textured Quiff', group: 'Modern Men', region: 'Contemporary', gender: 'Men', length: 'Short', type: 'Modern', image: 'photo-1507003211169-0a1dd7228f2d' },
+  { id: 13, name: 'Modern Crew Cut', group: 'Modern Men', region: 'Contemporary', gender: 'Men', length: 'Short', type: 'Modern', image: 'photo-1506794778202-cad84cf45f1d' },
+  { id: 14, name: 'Curly Crop', group: 'Modern Men', region: 'Contemporary', gender: 'Men', length: 'Short', type: 'Modern', image: 'photo-1500648767791-00dcc994a43e' },
+  { id: 15, name: 'Odissi Dance Bun', group: 'Bridal & Festive', region: 'Odisha', gender: 'Women', length: 'Medium', type: 'Traditional', image: 'photo-1524250502761-1ac6f2e30d43' },
+  { id: 16, name: 'Maharashtrian Ambada', group: 'Indian Heritage', region: 'Maharashtra', gender: 'Women', length: 'Medium', type: 'Traditional', image: 'photo-1524504388940-b1c1722653e1' },
 ];
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 26 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } }
-};
-
-function Header() {
-  const [open, setOpen] = useState(false);
-  const links = [["Discover", "#discover"], ["Indian styles", "#heritage"], ["How it works", "#how"], ["For salons", "#salons"]];
-  return <header className="site-header">
-    <a className="brand" href="#" aria-label="Teeru home"><span className="brand-mark">t.</span><span>teeru<span className="brand-dot">.</span></span></a>
-    <nav className={open ? "nav nav-open" : "nav"}>
-      {links.map(([label, href]) => <a key={label} href={href} onClick={() => setOpen(false)}>{label}</a>)}
-      <a className="nav-cta" href="#try" onClick={() => setOpen(false)}>Try your look <ArrowUpRight size={15}/></a>
-    </nav>
-    <button className="menu-toggle" onClick={() => setOpen(!open)} aria-label="Toggle navigation">{open ? <X/> : <Menu/>}</button>
-  </header>;
-}
-
-function StyleCard({ item, index }) {
-  return <motion.article className="style-card" variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} transition={{ delay: index * 0.05 }}>
-    <div className="style-image-wrap">
-      <img src={item.image} alt={`${item.name} hairstyle inspiration`} loading="lazy" />
-      <span className="style-tag">{item.tag}</span>
-      <button className="save-style" aria-label={`Preview ${item.name}`} onClick={() => document.getElementById("try")?.scrollIntoView({ behavior: "smooth" })}><ArrowUpRight size={18}/></button>
-    </div>
-    <div className="style-info">
-      <div><p className="eyebrow">{item.region} · {item.length} hair</p><h3>{item.name}</h3></div>
-      <p className="style-description">{item.description}</p>
-    </div>
-  </motion.article>;
-}
+const filters = ['All styles', 'Indian Heritage', 'Bridal & Festive', 'Modern Women', 'Modern Men'];
+const imageUrl = (id) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&q=85`;
 
 function App() {
+  const [activeFilter, setActiveFilter] = useState('All styles');
+  const [search, setSearch] = useState('');
+  const [gender, setGender] = useState('All');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [saved, setSaved] = useState([]);
+  const [showPreview, setShowPreview] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState(null);
   const reduceMotion = useReducedMotion();
-  const [activeCategory, setActiveCategory] = useState("All styles");
-  const [query, setQuery] = useState("");
-  const [mobileMenu, setMobileMenu] = useState(false);
-  const filtered = useMemo(() => styles.filter(item => {
-    const categoryMatch = activeCategory === "All styles" || item.category === activeCategory;
-    const searchMatch = `${item.name} ${item.region} ${item.category}`.toLowerCase().includes(query.toLowerCase());
-    return categoryMatch && searchMatch;
-  }), [activeCategory, query]);
 
-  return <div className="app-shell">
-    <Header />
-    <main>
-      <section className="hero">
-        <div className="hero-glow hero-glow-one" /><div className="hero-glow hero-glow-two" />
-        <div className="hero-grid">
-          <motion.div className="hero-copy" initial="hidden" animate="show" variants={fadeUp}>
-            <div className="eyebrow hero-kicker"><span className="live-dot"/> THE NEW WAY TO FIND YOUR LOOK</div>
-            <h1>Your hair.<br/><em>Your identity.</em><br/>Your Teeru.</h1>
-            <p className="hero-subtitle">Explore looks from India's rich hair traditions to today's freshest cuts. Find the one that feels like you — before you book the chair.</p>
-            <div className="hero-actions">
-              <a className="button button-primary" href="#discover">Explore hairstyles <ArrowRight size={17}/></a>
-              <a className="button button-quiet" href="#how"><span className="play-icon"><Play size={12} fill="currentColor"/></span> How it works</a>
-            </div>
-            <div className="hero-proof"><div className="proof-avatars"><span>R</span><span>A</span><span>S</span></div><p><strong>One destination.</strong><br/>A world of hairstyles.</p></div>
-          </motion.div>
-          <motion.div className="hero-visual" initial={{ opacity: 0, scale: .94, y: 22 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 1.25, ease: "easeOut", delay: .15 }}>
-            <div className="hero-photo-frame"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=90" alt="Editorial portrait with modern hairstyle"/></div>
-            <div className="orbit orbit-a"/><div className="orbit orbit-b"/>
-            <motion.div className="floating-note note-top" animate={reduceMotion ? {} : { y: [0, -8, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}><Sparkles size={15}/><span>Find your signature</span></motion.div>
-            <motion.div className="floating-note note-bottom" animate={reduceMotion ? {} : { y: [0, 7, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}><span className="note-number">01</span><span>Tradition meets now</span></motion.div>
-            <div className="visual-index">LOOKBOOK / 001</div>
-          </motion.div>
+  const visibleStyles = useMemo(() => styles.filter((style) => {
+    const matchesCategory = activeFilter === 'All styles' || style.group === activeFilter;
+    const matchesGender = gender === 'All' || style.gender === gender;
+    const matchesSearch = `${style.name} ${style.region} ${style.type}`.toLowerCase().includes(search.toLowerCase());
+    return matchesCategory && matchesGender && matchesSearch;
+  }), [activeFilter, gender, search]);
+
+  const fadeUp = { hidden: { opacity: 0, y: 26 }, show: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.8, ease: [0.22, 1, 0.36, 1] } } };
+
+  const toggleSave = (id) => setSaved((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+  const openPreview = (style = null) => { setSelectedStyle(style); setShowPreview(true); };
+
+  return <div className="site-shell">
+    <div className="announcement"><span className="announcement-dot" /> A new way to find your signature look <span className="announcement-link" onClick={() => document.getElementById('discover')?.scrollIntoView({ behavior: 'smooth' })}>Explore styles <ArrowUpRight size={13}/></span></div>
+    <header className="nav-wrap">
+      <nav className="nav container">
+        <a className="brand" href="#top" aria-label="Teeru home"><span className="brand-mark">t.</span><span>teeru<span className="brand-period">.</span></span></a>
+        <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
+          <a href="#discover" onClick={() => setMenuOpen(false)}>Explore styles</a><a href="#heritage" onClick={() => setMenuOpen(false)}>Indian heritage</a><a href="#how" onClick={() => setMenuOpen(false)}>How it works</a>
         </div>
-        <div className="hero-bottom"><span>DISCOVER YOUR NEXT LOOK</span><span>SCROLL TO EXPLORE <span className="scroll-line"/></span></div>
+        <div className="nav-actions"><button className="nav-ghost" onClick={() => openPreview()}>Try virtual look</button><button className="nav-cta" onClick={() => document.getElementById('discover')?.scrollIntoView({ behavior: 'smooth' })}>Find your style <ArrowUpRight size={15}/></button></div>
+        <button className="mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen ? <X/> : <Menu/>}</button>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section className="hero container">
+        <div className="hero-copy">
+          <motion.div className="eyebrow" initial="hidden" animate="show" variants={fadeUp}><span className="eyebrow-line"/> THE ART OF YOUR NEXT LOOK</motion.div>
+          <motion.h1 initial="hidden" animate="show" variants={{...fadeUp, show:{...fadeUp.show, transition:{...fadeUp.show.transition, delay:.12}}}}>Your hair.<br/><em>Your</em> <span className="serif-accent">story.</span></motion.h1>
+          <motion.p className="hero-description" initial="hidden" animate="show" variants={{...fadeUp, show:{...fadeUp.show, transition:{...fadeUp.show.transition, delay:.24}}}}>From timeless Indian heritage to the cut you saved last night. Discover the look that feels like you.</motion.p>
+          <motion.div className="hero-buttons" initial="hidden" animate="show" variants={{...fadeUp, show:{...fadeUp.show, transition:{...fadeUp.show.transition, delay:.34}}}}><button className="button-primary" onClick={() => document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}>Discover hairstyles <ArrowRight size={17}/></button><button className="button-text" onClick={() => openPreview()}><span className="play-icon"><Sparkles size={15}/></span> Preview your look</button></motion.div>
+          <motion.div className="hero-note" initial="hidden" animate="show" variants={fadeUp}><div className="avatar-stack"><span>✦</span><span>✦</span><span>✦</span></div><div><strong>Rooted in culture. Made for you.</strong><small>Styles across generations and regions</small></div></motion.div>
+        </div>
+        <motion.div className="hero-art" initial={{opacity:0, scale:.96}} animate={{opacity:1,scale:1}} transition={{duration:1.15,ease:'easeOut'}}>
+          <div className="hero-image-frame"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=90" alt="Portrait with softly styled hair"/><div className="image-shade"/></div>
+          <motion.div className="floating-card card-top" animate={reduceMotion ? {} : {y:[0,-8,0]}} transition={{duration:7,repeat:Infinity,ease:'easeInOut'}}><span className="mini-label">THE EDIT</span><strong>Find your<br/>signature style.</strong><ArrowUpRight size={18}/></motion.div>
+          <motion.div className="floating-card card-bottom" animate={reduceMotion ? {} : {y:[0,8,0]}} transition={{duration:8,repeat:Infinity,ease:'easeInOut'}}><span className="sparkle-orb"><Sparkles size={16}/></span><div><strong>Heritage meets now</strong><small>100+ looks to explore</small></div></motion.div>
+          <div className="hero-vertical">A STYLE FOR EVERY STORY — TEERU 2026</div><div className="hero-orbit orbit-one"/><div className="hero-orbit orbit-two"/>
+        </motion.div>
+        <div className="hero-bottom"><span>01 / 04</span><span className="hero-bottom-line"/><span>SCROLL TO DISCOVER <ArrowDown size={13}/></span></div>
       </section>
 
-      <section className="intro-strip" id="heritage">
-        <p>FROM THE ROOTS OF INDIA</p><h2>Many cultures. <span>Infinite ways</span> to wear your hair.</h2>
-        <p className="intro-note">A growing collection inspired by regional artistry, timeless traditions and modern self-expression.</p>
+      <section className="ticker" aria-label="Teeru categories"><div className="ticker-track">{['INDIAN HERITAGE','MODERN CUTS','BRIDAL DETAILS','YOUR NEXT LOOK','INDIAN HERITAGE','MODERN CUTS','BRIDAL DETAILS','YOUR NEXT LOOK'].map((item,i)=><span key={i}>{item}<i>✳</i></span>)}</div></section>
+
+      <section className="section discover-section container" id="discover">
+        <motion.div className="section-heading" initial="hidden" whileInView="show" viewport={{once:true, amount:.25}} variants={fadeUp}><div><div className="eyebrow"><span className="eyebrow-line"/> THE STYLE LIBRARY</div><h2>Find the look<br/><em>that feels</em> <span className="serif-accent">right.</span></h2></div><p>A considered collection of cuts, textures and traditions. Explore by mood, region or the style you have in mind.</p></motion.div>
+        <div className="filter-bar">
+          <div className="filter-tabs">{filters.map((filter) => <button key={filter} className={activeFilter===filter?'active':''} onClick={()=>setActiveFilter(filter)}>{filter}</button>)}</div>
+          <div className="filter-tools"><label className="search-box"><Search size={16}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search styles or regions" /></label><select value={gender} onChange={e=>setGender(e.target.value)} aria-label="Filter by gender"><option value="All">All looks</option><option value="Women">Women</option><option value="Men">Men</option></select></div>
+        </div>
+        <div className="results-line"><span>{visibleStyles.length.toString().padStart(2,'0')} STYLES TO EXPLORE</span><span><SlidersHorizontal size={13}/> Curated for inspiration</span></div>
+        <motion.div layout className="style-grid">
+          <AnimatePresence mode="popLayout">{visibleStyles.map((style,index)=><motion.article layout key={style.id} className="style-card" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,scale:.97}} transition={{duration:.45,delay:Math.min(index*.035,.2)}}>
+            <button className="save-button" onClick={()=>toggleSave(style.id)} aria-label={saved.includes(style.id)?'Remove saved style':'Save style'}><Heart size={16} fill={saved.includes(style.id)?'currentColor':'none'}/></button>
+            <button className="style-image" onClick={()=>openPreview(style)} aria-label={`Preview ${style.name}`}><img src={imageUrl(style.image)} alt={`${style.name} hairstyle inspiration`} loading="lazy"/><span className="image-hover"><Sparkles size={15}/> Preview this look</span></button>
+            <div className="style-info"><div><span className="style-region">{style.region} · {style.type}</span><h3>{style.name}</h3></div><button className="round-arrow" onClick={()=>openPreview(style)} aria-label={`Open ${style.name}`}><ArrowUpRight size={17}/></button></div>
+          </motion.article>)}</AnimatePresence>
+        </motion.div>
+        {visibleStyles.length===0 && <div className="empty-state"><Search size={25}/><h3>No styles found</h3><p>Try a different name, region or category.</p><button className="button-text" onClick={()=>{setSearch('');setActiveFilter('All styles');setGender('All')}}>Clear filters <ArrowRight size={15}/></button></div>}
+        <div className="catalogue-note"><span className="note-star">✳</span><p>This is a starter catalogue. Add verified regional references and your full 104-style collection in <code>src/App.jsx</code>.</p></div>
       </section>
 
-      <section className="discover-section section-pad" id="discover">
-        <div className="section-heading">
-          <div><p className="eyebrow">THE TEERU LOOKBOOK</p><h2>Find the look<br/><em>that speaks you.</em></h2></div>
-          <p className="section-description">Explore the collection by style, region or mood. Your next look might be a classic you know — or a tradition you haven't discovered yet.</p>
-        </div>
-        <div className="catalog-toolbar">
-          <div className="category-tabs">{categories.map(category => <button key={category} className={activeCategory === category ? "category-tab active" : "category-tab"} onClick={() => setActiveCategory(category)}>{category}</button>)}</div>
-          <label className="search-box"><Search size={17}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search styles or regions..." /></label>
-        </div>
-        <div className="style-grid">
-          {filtered.map((item, index) => <StyleCard key={item.id} item={item} index={index}/>)}
-        </div>
-        {filtered.length === 0 && <div className="empty-state"><SlidersHorizontal/><h3>No styles found</h3><p>Try another search or select a different category.</p></div>}
-        <div className="catalog-foot"><span>SHOWING {filtered.length.toString().padStart(2, "0")} OF {styles.length.toString().padStart(2, "0")} FEATURED LOOKS</span><span>MORE STYLES COMING SOON</span></div>
-      </section>
+      <section className="heritage-section" id="heritage"><div className="heritage-inner container"><div className="heritage-image"><img src="https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?auto=format&fit=crop&w=1100&q=85" alt="Traditional Indian-inspired beauty portrait"/><div className="heritage-image-caption">ROOTS THAT NEVER FADE <span>✳</span></div></div><div className="heritage-copy"><div className="eyebrow light"><span className="eyebrow-line"/> THE INDIAN EDITION</div><h2>Many roots.<br/><em>Endless</em> <span className="serif-accent">expressions.</span></h2><p>From the flower-wrapped Poola Jada of the South to the vibrant Paranda braid of Punjab, Indian hair traditions carry stories worth celebrating.</p><div className="region-list"><span>ANDHRA PRADESH</span><span>TELANGANA</span><span>PUNJAB</span><span>RAJASTHAN</span><span>KERALA</span><span>WEST BENGAL</span><span>ODISHA</span><span>MAHARASHTRA</span></div><button className="button-light" onClick={()=>{setActiveFilter('Indian Heritage');document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}}>Explore Indian heritage <ArrowUpRight size={16}/></button></div></div></section>
 
-      <section className="heritage-feature">
-        <div className="heritage-image"><img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=85" alt="Fashion portrait"/></div>
-        <div className="heritage-copy"><p className="eyebrow">ROOTED IN CULTURE. MADE FOR YOU.</p><h2>India's hair stories<br/>deserve the <em>spotlight.</em></h2><p>From the intricate Poola Jada of Andhra Pradesh to the elegance of a Bengali Khopa, Teeru brings regional inspiration into one discoverable space.</p><a href="#discover" className="text-link">Explore Indian heritage <ArrowUpRight size={17}/></a></div>
-      </section>
+      <section className="how-section container" id="how"><div className="eyebrow"><span className="eyebrow-line"/> YOUR STYLE JOURNEY</div><div className="how-heading"><h2>A little inspiration.<br/><em>A whole new</em> <span className="serif-accent">you.</span></h2><p>Take the guesswork out of your next salon visit. Start with a style, make it yours, then find a professional.</p></div><div className="steps-grid"><div className="step"><span>01</span><div className="step-icon"><Search/></div><h3>Explore</h3><p>Discover cuts and styles from Indian heritage to today's trends.</p></div><div className="step"><span>02</span><div className="step-icon"><Camera/></div><h3>Visualise</h3><p>See how a new look could work for you with a virtual preview.</p></div><div className="step"><span>03</span><div className="step-icon"><CalendarDays/></div><h3>Book</h3><p>Choose a salon and a time that fits your schedule.</p></div></div></section>
 
-      <section className="how-section section-pad" id="how">
-        <div className="section-heading centered"><div><p className="eyebrow">A BETTER WAY TO DECIDE</p><h2>Your next look,<br/><em>without the guesswork.</em></h2></div><p className="section-description">A simple journey from inspiration to salon chair.</p></div>
-        <div className="steps-grid">
-          {[["01","Discover","Browse hairstyles across regions, lengths and styles."],["02","Preview","Try a virtual hairstyle preview before making the change."],["03","Book","Find a salon and choose a slot that works for you."]].map(([n,title,desc],i)=><motion.div className="step-card" key={n} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} transition={{ delay: i*.12 }}><span className="step-number">{n}</span><div className="step-icon">{i===0?<Search/>:i===1?<Sparkles/>:<Clock3/>}</div><h3>{title}</h3><p>{desc}</p></motion.div>)}
-        </div>
-      </section>
-
-      <section className="try-section" id="try">
-        <div className="try-inner"><div><p className="eyebrow">THE LOOK STARTS HERE</p><h2>Ready to meet<br/><em>your next look?</em></h2><p>Our virtual preview and salon booking experience is being developed. Join the early-access list to hear when it opens.</p></div>
-          <form className="waitlist-form" onSubmit={e => { e.preventDefault(); alert("Thanks for your interest. Connect this form to your email service to collect sign-ups."); }}>
-            <label htmlFor="email">Your email address</label><div className="email-row"><input id="email" type="email" placeholder="you@example.com" required/><button type="submit" aria-label="Join early access"><ArrowRight/></button></div><small>No spam. Just a note when Teeru is ready.</small>
-          </form>
-        </div>
-      </section>
-
-      <section className="salon-section section-pad" id="salons"><div className="salon-card"><div><p className="eyebrow">FOR SALON PARTNERS</p><h2>Good work deserves<br/><em>to be discovered.</em></h2><p>Bring your salon online, showcase your work and connect with people looking for their next style.</p><a className="button button-dark" href="mailto:hello@teeru.in?subject=Salon%20Partnership">Partner with Teeru <ArrowUpRight size={17}/></a></div><div className="salon-art"><Scissors size={82} strokeWidth={1}/><span>YOUR CRAFT.<br/>MORE VISIBILITY.</span></div></div></section>
+      <section className="final-cta container"><div className="cta-decoration">✳</div><div className="eyebrow light"><span className="eyebrow-line"/> YOUR NEXT CHAPTER STARTS HERE</div><h2>Ready for a <em>new</em><br/>point of view?</h2><p>Your next look is closer than you think.</p><button className="button-light" onClick={()=>openPreview()}>Start with your look <ArrowUpRight size={16}/></button></section>
     </main>
-    <footer className="footer"><a className="brand" href="#"><span className="brand-mark">t.</span><span>teeru<span className="brand-dot">.</span></span></a><p>Made for every version of you.</p><div className="footer-links"><a href="#discover">Explore</a><a href="#salons">For salons</a><a href="mailto:hello@teeru.in">Contact</a><a href="#"><Instagram size={16}/></a></div><span className="copyright">© 2026 TEERU. ALL RIGHTS RESERVED.</span></footer>
+
+    <footer className="footer"><div className="container footer-main"><a className="brand footer-brand" href="#top"><span className="brand-mark">t.</span><span>teeru<span className="brand-period">.</span></span></a><p>Your look. Your style. Your Teeru.</p><div className="footer-links"><a href="#discover">Explore</a><a href="#heritage">Indian heritage</a><a href="#how">How it works</a></div></div><div className="container footer-bottom"><span>© 2026 TEERU. ALL RIGHTS RESERVED.</span><span>MADE FOR EVERY VERSION OF YOU.</span></div></footer>
+
+    <AnimatePresence>{showPreview && <motion.div className="modal-backdrop" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setShowPreview(false)}><motion.div className="preview-modal" initial={{opacity:0,y:25,scale:.98}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:15}} onClick={e=>e.stopPropagation()}><button className="modal-close" onClick={()=>setShowPreview(false)} aria-label="Close"><X/></button><div className="modal-icon"><Sparkles/></div><div className="eyebrow"><span className="eyebrow-line"/> VIRTUAL STYLE PREVIEW</div><h2>{selectedStyle ? `Try ${selectedStyle.name}.` : 'See a new side of you.'}</h2><p>Upload a clear front-facing photo to prepare for a virtual hairstyle preview. AI transformation is not connected in this starter version.</p><label className="upload-zone"><Camera size={22}/><strong>Choose your photo</strong><span>JPG or PNG · Use a well-lit, front-facing photo</span><input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{if(e.target.files?.[0]) alert('Photo selected. Connect your AI image API to generate the hairstyle preview.')}}/></label><button className="button-primary full-button" onClick={()=>setShowPreview(false)}>Got it <ArrowRight size={16}/></button><small className="modal-footnote">Your photo is not uploaded or stored by this demo.</small></motion.div></motion.div>}</AnimatePresence>
   </div>;
 }
 
